@@ -58,34 +58,100 @@ class Game:
         else:
             return True
 
-    def bfs(self, visited, row, col, color):
-        if (row, col) in visited or self._grid.get_piece(row, col) != color:
-            return 0  # already visited
-
-        color = self._grid.get_piece(row, col)
-
-        queue = deque()
-        queue.append((row, col))
-        num_connects = 0
-        while len(queue) > 0:
-            row, col = queue.popleft()
-            visited.add((row, col))
-            num_connects += 1
-            neighbors = [(row, col + 1), (row, col - 1), (row + 1, col), (row - 1, col)]
-            for neighbor in neighbors:
-                row_togo, col_togo = neighbor
-                if (
-                    self.is_connected(row_togo, col_togo, color)
-                    and (row_togo, col_togo) not in visited
-                ):
-                    queue.append((row_togo, col_togo))
-        return num_connects
-
     def check_win(self, player):
-        visited = set()
-        for row in range(self._grid.get_rows()):
-            for col in range(self._grid.get_cols()):
-                num_connects = self.bfs(visited, row, col, player.get_color())
-                if num_connects == self._num_connects_to_win:
+        # check vertical
+        for col in range(self._grid.get_cols()):
+            cnt = 0
+            for row in range(self._grid.get_rows()):
+                if self._grid.get_piece(row, col) == player.get_color():
+                    cnt += 1
+                else:
+                    cnt = 0
+                if cnt >= self._num_connects_to_win:
                     return True
+
+        # check horizontal
+        for row in range(self._grid.get_rows()):
+            cnt = 0
+            for col in range(self._grid.get_cols()):
+                if self._grid.get_piece(row, col) == player.get_color():
+                    cnt += 1
+                else:
+                    cnt = 0
+                if cnt >= self._num_connects_to_win:
+                    return True
+
+        # check diagonal
+        # (0,0), (1,1), (2,2), ... ,
+        # (0,1), (1,2), (2,3), ... ,
+        # (0,col-1), (1, col)
+        # (0, col)
+        for col in range(self._grid.get_cols()):
+            row = 0
+            cnt = 0
+            while row < self._grid.get_rows() and col < self._grid.get_cols():
+                if self._grid.get_piece(row, col) == player.get_color():
+                    cnt += 1
+                else:
+                    cnt = 0
+                if cnt >= self._num_connects_to_win:
+                    return True
+                row += 1
+                col += 1
+
+        # (1, 0), (2, 1), (3, 2), ...
+        # (2, 0), (3, 2), (4, 3), ...
+        # (row-1, 0), (row, 1)
+        # (row, 0)
+
+        for row in range(1, self._grid.get_rows()):
+            col = 0
+            cnt = 0
+            while row < self._grid.get_rows() and col < self._grid.get_cols():
+                if self._grid.get_piece(row, col) == player.get_color():
+                    cnt += 1
+                else:
+                    cnt = 0
+                if cnt >= self._num_connects_to_win:
+                    return True
+                row += 1
+                col += 1
+
+        # check reverse diagnoal
+        # (0, 0)
+        # (0, 1), (1, 0)
+        # (0, 2), (1, 1), (1, 0)
+        # (0, col), (1, col-1), ...
+
+        # (1, col), (2, col-1), ...
+        # (2, col), (3, col-1), ...
+        # (row-1, col), (row, col-1)
+        # (row, col)
+
+        for col in range(self._grid.get_cols()):
+            row = 0
+            cnt = 0
+            while row < self._grid.get_rows() and col >= 0:
+                if self._grid.get_piece(row, col) == player.get_color():
+                    cnt += 1
+                else:
+                    cnt = 0
+                if cnt >= self._num_connects_to_win:
+                    return True
+                row += 1
+                col -= 1
+
+        for row in range(1, self._grid.get_rows()):
+            col = self._grid.get_cols() - 1
+            cnt = 0
+            while row < self._grid.get_rows() and col >= 0:
+                if self._grid.get_piece(row, col) == player.get_color():
+                    cnt += 1
+                else:
+                    cnt = 0
+                if cnt >= self._num_connects_to_win:
+                    return True
+                row += 1
+                col -= 1
+
         return False
