@@ -36,7 +36,7 @@ class Grid:
             if self._grid[row][col] == PieceColor.Empty:
                 self._grid[row][col] = color
                 return row
-        raise ValueError("You cannot place a piece on that spot")
+        return None 
 
     def print(self):
         print("Grid:\n")

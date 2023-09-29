@@ -42,14 +42,18 @@ class Game:
 
     def play_turn(self, player):
         self._grid.print()
-        col = int(
-            input(
-                f"Enter column to place a piece on between {0} and {self._grid.get_cols()-1} \n"
+        while True:
+            col = int(
+                input(
+                    f"Enter column to place a piece on between {0} and {self._grid.get_cols()-1} \n"
+                )
             )
-        )
-        row = self._grid.set_piece(col, player.get_color())
-        self._grid.print()
-        return (row, col)
+            row = self._grid.set_piece(col, player.get_color())
+            self._grid.print()
+            if row is not None:
+                return (row, col)
+            else:
+                print("You cannot place a piece here")
 
     def is_connected(self, row, col, color):
         if (
