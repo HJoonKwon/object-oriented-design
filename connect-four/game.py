@@ -30,15 +30,15 @@ class Game:
     def play_round(self):
         while True:
             for player in self._players:
-                row, col = self.play_turn(player)
+                self.play_turn(player)
                 if self.check_win(player):
                     print(f"{player.get_name()} win this round!")
                     self._grid.init_grid()
                     return player
-                if self.check_draw():
-                    print(f"Draw!")
-                    self._grid.init_grid()
-                    return None 
+            if self.check_draw():
+                print(f"Draw!")
+                self._grid.init_grid()
+                return None
 
     def play_turn(self, player):
         self._grid.print()
@@ -48,12 +48,12 @@ class Game:
                     f"Enter column to place a piece on between {0} and {self._grid.get_cols()-1} \n"
                 )
             )
-            row = self._grid.set_piece(col, player.get_color())
-            self._grid.print()
-            if row is not None:
-                return (row, col)
+            if self._grid.set_piece(col, player.get_color()):
+                self._grid.print()
+                break
             else:
                 print("You cannot place a piece here")
+                self._grid.print()
 
     def is_connected(self, row, col, color):
         if (
@@ -66,14 +66,14 @@ class Game:
             return False
         else:
             return True
-    
+
     def check_draw(self):
         for row in range(self._grid.get_rows()):
             for col in range(self._grid.get_cols()):
                 if self._grid.get_piece(row, col) == PieceColor.Empty:
-                    return False 
-        return True 
-        
+                    return False
+        return True
+
     def check_win(self, player):
         # check vertical
         for col in range(self._grid.get_cols()):

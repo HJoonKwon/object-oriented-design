@@ -35,8 +35,8 @@ class Grid:
         for row in range(self._rows - 1, -1, -1):
             if self._grid[row][col] == PieceColor.Empty:
                 self._grid[row][col] = color
-                return row
-        return None 
+                return True
+        return False
 
     def print(self):
         print("Grid:\n")
