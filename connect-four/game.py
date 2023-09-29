@@ -18,13 +18,14 @@ class Game:
         max_score = 0
         while max_score < self._rounds_to_win:
             winner = self.play_round()
-            self._scores[winner.get_name()] += 1
-            print(f"current score: {self._scores}")
-            if self._scores[winner.get_name()] >= max_score:
-                max_score = self._scores[winner.get_name()]
-            if max_score >= self._rounds_to_win:
-                print(f"{winner.get_name()} win the game! Congrats!")
-                break
+            if winner is not None:
+                self._scores[winner.get_name()] += 1
+                print(f"current score: {self._scores}")
+                if self._scores[winner.get_name()] >= max_score:
+                    max_score = self._scores[winner.get_name()]
+                if max_score >= self._rounds_to_win:
+                    print(f"{winner.get_name()} win the game! Congrats!")
+                    break
 
     def play_round(self):
         while True:
@@ -34,6 +35,10 @@ class Game:
                     print(f"{player.get_name()} win this round!")
                     self._grid.init_grid()
                     return player
+                if self.check_draw():
+                    print(f"Draw!")
+                    self._grid.init_grid()
+                    return None 
 
     def play_turn(self, player):
         self._grid.print()
@@ -57,7 +62,14 @@ class Game:
             return False
         else:
             return True
-
+    
+    def check_draw(self):
+        for row in range(self._grid.get_rows()):
+            for col in range(self._grid.get_cols()):
+                if self._grid.get_piece(row, col) == PieceColor.Empty:
+                    return False 
+        return True 
+        
     def check_win(self, player):
         # check vertical
         for col in range(self._grid.get_cols()):
