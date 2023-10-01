@@ -16,3 +16,6 @@ class Card:
     
     def get_suit(self) -> Suit:
         return self._suit 
+    
+    def __repr__(self):
+        return f"({self._value},{self._suit})"
