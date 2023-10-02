@@ -3,11 +3,14 @@ from player import UserPlayer, Dealer, Hand
 
 class Game:
     
-    def __init__(self):
+    def __init__(self, starting_bet:int = 10):
         self._deck = Deck() 
-        user_money = int(input(f"Type in how much money you want to deposit: "))
+        self._starting_bet = starting_bet
+        while (user_money := int(input(f"Type in how much money you want to deposit: "))) < starting_bet:
+            print(f"You have to deposit more than {starting_bet}")
         self._user = UserPlayer(Hand(), user_money)
         self._dealer = Dealer(Hand())
+        
     
     def play_round(self):
         
@@ -21,7 +24,8 @@ class Game:
         print(f"user: {self._user.get_hand().get_cards()} \n")
         print(f"dealer: {self._dealer.get_hand().get_cards()[0]}, X \n")
         
-        winning_money = 0 
+        self._user.bet_money(self._starting_bet)
+        winning_money = self._starting_bet
         
         while self._user.make_move():
             print("User Draw: \n")
@@ -64,8 +68,8 @@ class Game:
         return 
     
     def reset_game(self):
-        if self._user.get_money() < 1:
-            print(f"Your money is ran out. The game is over.")
+        if self._user.get_money() < self._starting_bet:
+            print(f"Your money is below the minimum bet. The game is over.")
             return 
         if input("Start new round? y/n: ") != "y":
             print("Finish the game!")
