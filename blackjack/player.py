@@ -43,20 +43,30 @@ class Player(ABC):
         pass 
 
 class UserPlayer(Player):
-    def __init__(self, hand: Hand, money: int):
+    def __init__(self, hand: Hand, money: int = 0):
         super().__init__(hand) 
         self._money = money  
     
+    def get_money(self):
+        return self._money 
+    
+    def add_money(self, money: int):
+        self._money += money 
+    
+    def bet_money(self, money: int):
+        self._money -= money 
+        
     def make_move(self):
-        return str(input("Draw? y/n")) == 'y'
+        return str(input("Draw? y/n: ")) == 'y'
    
 class Dealer(Player):
     def __init__(self, hand: Hand, target_score: int = 17):
         super().__init__(hand)
         self._target_score = target_score
+        self._hand = hand
     
     def make_move(self):
-        if self._score < self._target_score:
+        if self._hand.get_score() < self._target_score:
             return True 
         else:
             return False  
