@@ -9,6 +9,10 @@ class Hand:
     def add_card(self, card: Card):
         assert isinstance(card, Card), 'invalid card instance'
         self._cards.append(card)
+        if card.get_value() == 1:
+            self._score += 11 if self._score + 11 < 21 else 1 
+        else:
+            self._score += card.get_value() 
     
     def get_cards(self) -> list[Card]:
         return self._cards
