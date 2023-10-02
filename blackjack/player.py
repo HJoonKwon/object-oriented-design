@@ -22,17 +22,17 @@ class Hand:
         print(f"  score: {self.get_score()} \n")
 
 class Player(ABC):
-    def __init__(self):
-        pass 
+    def __init__(self, hand: Hand):
+        self._hand = hand  
         
-    def get_hand(self):
-        pass
+    def get_hand(self) -> Hand:
+        return self._hand 
     
     def clear_hand(self):
-        pass 
+        self._hand = Hand()  
     
-    def add_card(self):
-        pass 
+    def add_card(self, card: Card):
+        self._hand.add_card(card) 
     
     @abstractmethod
     def make_move(self):
